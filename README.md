@@ -13,7 +13,7 @@
 在项目目录下执行
 
 ```bash
-composer require wangyan/directmail:dev-master
+composer require wang_yan/directmail:dev-master
 ```
 
 ## 配置
