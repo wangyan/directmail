@@ -1,0 +1,20 @@
+{
+    "name": "wangyan/directmail",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "WangYan",
+            "email": "i@wangyan.org"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "illuminate/support": "^5.4",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "WangYan\\DirectMail\\": "src/"
+        }
+    }
+}
