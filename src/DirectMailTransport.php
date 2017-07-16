@@ -7,6 +7,7 @@ use Illuminate\Mail\Transport\Transport;
 use Psr\Http\Message\ResponseInterface;
 use Swift_Mime_Message;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7;
 
 class DirectMailTransport extends Transport
 {
@@ -128,7 +129,6 @@ class DirectMailTransport extends Transport
      */
     private function makeSign($Parameters)
     {
-        date_default_timezone_set("GMT");
         ksort($Parameters);
         $CanonicalizedQueryString = '';
         foreach ($Parameters as $key => $value) {
@@ -156,46 +156,24 @@ class DirectMailTransport extends Transport
         return $res;
     }
 
+
     /**
-     * 解析 DirectMail 返回值，提示异常原因
+     * 解析 DirectMail 返回值，失败抛出异常
      *
      * @param ResponseInterface $response
      * @return bool
+     * @throws DirectMailException
      */
     protected function response(ResponseInterface $response)
     {
+        // Psr7\str($response);
+        $StatusCode = $response->getStatusCode();
         $Body = json_decode($response->getBody());
 
-        if (isset($Body->Code)) {
-            $Code = $Body->Code;
-            switch ($Code):
-                case 'InvalidMailAddress.NotFound':
-                    echo "发信地址不存在";
-                    break;
-                case 'InvalidMailAddressStatus.Malformed':
-                    echo "发信地址状态不正确";
-                    break;
-                case 'InvalidToAddress':
-                    echo "目标地址不正确";
-                    break;
-                case 'InvalidBody':
-                    echo "邮件正文不正确。textBody 或 htmlBody不能同时为空";
-                    break;
-                case 'InvalidSendMail.Spam':
-                    echo "本次发送操作被反垃圾系统检测为垃圾邮件，禁止发送。请仔细检查邮件内容和域名状态等";
-                    break;
-                case 'InvalidSubject.Malformed':
-                    echo "邮件主题限制在100个字符以内";
-                    break;
-                case 'InvalidMailAddressDomain.Malformed':
-                    echo "发信地址的域名状态不正确，请检查MX、SPF配置是否正确";
-                    break;
-                case 'InvalidFromALias.Malformed':
-                    echo "发信人昵称不正确，请检查发信人昵称是否正确，长度小于15个字符。";
-                    break;
-                default:
-                    return true;
-            endswitch;
+        if ($StatusCode != 200) {
+            throw new DirectMailException($StatusCode,$Body->Code);
         }
+
+        return true;
     }
 }
