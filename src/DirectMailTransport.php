@@ -5,7 +5,7 @@ namespace WangYan\DirectMail;
 use GuzzleHttp\Client;
 use Illuminate\Mail\Transport\Transport;
 use Psr\Http\Message\ResponseInterface;
-use Swift_Mime_Message;
+use Swift_Mime_SimpleMessage;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7;
 
@@ -44,11 +44,11 @@ class DirectMailTransport extends Transport
     /**
      * 调用单一发信接口或者批量发信接口发信
      *
-     * @param Swift_Mime_Message $message
+     * @param Swift_Mime_SimpleMessage $message
      * @param null $failedRecipients
      * @return mixed
      */
-    public function send(Swift_Mime_Message $message, &$failedRecipients = null)
+    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
         $body = $message->getBody();
 
@@ -64,10 +64,10 @@ class DirectMailTransport extends Transport
     /**
      * 使用单一发信接口发信
      *
-     * @param Swift_Mime_Message $message
+     * @param Swift_Mime_SimpleMessage $message
      * @return ResponseInterface
      */
-    private function SingleSendMail(Swift_Mime_Message $message)
+    private function SingleSendMail(Swift_Mime_SimpleMessage $message)
     {
         // 单一发信接口参数
         $this->SingleParameters['Action'] = 'SingleSendMail';
@@ -113,10 +113,10 @@ class DirectMailTransport extends Transport
      * 获取发信人昵称
      * 发信人昵称长度小于15个字符
      *
-     * @param Swift_Mime_Message $message
+     * @param Swift_Mime_SimpleMessage $message
      * @return mixed
      */
-    private function getFromName(Swift_Mime_Message $message)
+    private function getFromName(Swift_Mime_SimpleMessage $message)
     {
         return array_get(array_values($message->getFrom()), 0);
     }
