@@ -27,6 +27,7 @@ class DirectMailTransport extends Transport
      */
     public function __construct($AccessKeyId, $AccessSecret, $ReplyToAddress, $AddressType)
     {
+        date_default_timezone_set('UTC');
         $this->AccessKeyId    =  $AccessKeyId;
         $this->AccessSecret   =  $AccessSecret;
         $this->ReplyToAddress =  $ReplyToAddress;
@@ -39,6 +40,7 @@ class DirectMailTransport extends Transport
         $this->CommonParameters['Timestamp'] = date('Y-m-d\TH:i:s\Z');
         $this->CommonParameters['SignatureVersion'] = '1.0';
         $this->CommonParameters['SignatureNonce'] = uniqid();
+        date_default_timezone_set(config('app.timezone'));
     }
 
     /**
